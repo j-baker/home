@@ -14,8 +14,6 @@
     in
     {
       homeModules.default = module;
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
-      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-rfc-style;
     }
     // flake-utils.lib.eachDefaultSystem (
       system:
@@ -23,6 +21,7 @@
         pkgs = (import nixpkgs { inherit system; });
       in
       {
+        formatter = pkgs.nixfmt-rfc-style;
         checks.canBuild = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 

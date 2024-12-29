@@ -13,6 +13,7 @@
       module = ./home.nix;
     in
     {
+      lib.home-manager = home-manager;
       homeModules.default = module;
     }
     // flake-utils.lib.eachDefaultSystem (
@@ -22,14 +23,15 @@
       in
       {
         formatter = pkgs.nixfmt-rfc-style;
-        checks.canBuild = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
+        checks.canBuild =
+          (home-manager.lib.homeManagerConfiguration {
+            inherit pkgs;
 
-          modules = [
-            module
-            ./test.nix
-          ];
-        };
+            modules = [
+              module
+              ./test.nix
+            ];
+          }).activationPackage;
       }
     );
 }

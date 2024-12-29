@@ -29,6 +29,11 @@
     };
   };
 
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;
+  };
+
   programs.tmux.enable = true;
 
   home.packages = with pkgs; [

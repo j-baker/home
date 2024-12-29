@@ -7,7 +7,7 @@
 }:
 {
   home.username = username;
-  home.userEmail = email;
+  home.homeDirectory = homeDirectory;
   home.stateVersion = "24.11";
 
   programs.fzf.enable = true;

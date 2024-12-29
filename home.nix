@@ -1,7 +1,13 @@
-{ pkgs, username, homeDirectory, email ? "j.baker@outlook.com", ... }:
 {
-    home.username = username;
-    home.userEmail = userEmail;
+  pkgs,
+  username,
+  homeDirectory,
+  email ? "j.baker@outlook.com",
+  ...
+}:
+{
+  home.username = username;
+  home.userEmail = email;
   home.stateVersion = "24.11";
 
   programs.fzf.enable = true;

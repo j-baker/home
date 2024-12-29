@@ -1,6 +1,7 @@
-{...}: {
-    home.username = "james";
-    home.homeDirectory = "/home/james";
+{ ... }:
+{
+  home.username = "james";
+  home.homeDirectory = "/home/james";
 
-    home.stateVersion = "24.11";
+  home.stateVersion = "24.11";
 }

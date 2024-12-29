@@ -12,10 +12,23 @@
     };
   };
 
-  programs.git.enable = true;
+  programs.git = {
+    userName = "James Baker";
+    userEmail = "j.baker@outlook.com";
+    lfs.enable = true;
+
+    extraConfig = {
+      pull = {
+        rebase = true;
+      };
+      rerere.enabled = true;
+    };
+  };
+
   programs.tmux.enable = true;
 
   home.packages = with pkgs; [
     jq
+    htop
   ];
 }

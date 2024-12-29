@@ -12,10 +12,10 @@
     } // flake-utils.lib.eachDefaultSystem (system: let 
       pkgs = (import nixpkgs { inherit system; });
     in {
-      homeConfigurations.test = home-manager.lib.homeManagerConfiguration {
+      checks.canBuild = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
-        modules = [ module ];
+        modules = [ module ./test.nix ];
       };
     });
 }

@@ -29,7 +29,6 @@
 
             modules = [
               module
-              ./test.nix
             ];
           }).activationPackage;
       }

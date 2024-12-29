@@ -15,6 +15,16 @@
     {
       lib.home-manager = home-manager;
       homeModules.default = module;
+      homeConfigurations.macos = home-manager.lib.homeManagerConfiguration {
+        pkgs = (import nixpkgs { system = "aarch64-darwin"; });
+        modules = [ module ];
+
+        extraSpecialArgs = {
+          username = "james";
+          homeDirectory = "/Users/james";
+          email = "j.baker@outlook.com";
+        };
+      };
     }
     // flake-utils.lib.eachDefaultSystem (
       system:
@@ -30,6 +40,12 @@
             modules = [
               module
             ];
+
+            extraSpecialArgs = {
+              username = "james";
+              homeDirectory = "/Users/james";
+              email = "j.baker@outlook.com";
+            };
           }).activationPackage;
       }
     );

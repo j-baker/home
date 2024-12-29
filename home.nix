@@ -10,6 +10,8 @@
   home.homeDirectory = homeDirectory;
   home.stateVersion = "24.11";
 
+  programs.home-manager.enable = true;
+
   programs.fzf.enable = true;
 
   programs.zsh = {

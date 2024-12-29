@@ -1,5 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, username, homeDirectory, email ? "j.baker@outlook.com", ... }:
 {
+    home.username = username;
+    home.userEmail = userEmail;
+  home.stateVersion = "24.11";
+
   programs.fzf.enable = true;
 
   programs.zsh = {
@@ -14,7 +18,7 @@
 
   programs.git = {
     userName = "James Baker";
-    userEmail = "j.baker@outlook.com";
+    userEmail = email;
     lfs.enable = true;
 
     extraConfig = {

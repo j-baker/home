@@ -13,10 +13,9 @@
   };
 
   programs.git.enable = true;
-
   programs.tmux.enable = true;
 
-  environment.homePackages = with pkgs; [
+  home.packages = with pkgs; [
     jq
   ];
 }

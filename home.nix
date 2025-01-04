@@ -53,8 +53,38 @@
 
   programs.tmux.enable = true;
 
+  programs.swaylock.enable = true;
+  services.swayidle.enable = true;
+  services.swayosd.enable = true;
+  programs.waybar.enable = true;
+
   home.packages = with pkgs; [
     jq
     htop
+
+    nwg-launchers
+    swaybg
   ];
+
+    wayland.windowManager.sway = {
+    enable = true;
+    package = null;
+    xwayland = true;
+    systemd.enable = true;
+
+
+    wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
+    config = rec {
+      bars = [{ command = "waybar"; }];
+      modifier = "Mod4";
+      # Use kitty as default terminal
+      terminal = "alacritty"; 
+    };
+
+    extraConfig = ''
+    bindgesture swipe:right workspace prev
+    bindgesture swipe:left workspace next
+    output * bg ${./background.jpg} fill
+    '';
+  };
 }

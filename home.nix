@@ -32,9 +32,16 @@
     lfs.enable = true;
 
     extraConfig = {
+      user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINURXYzuUG9sLdATYSzq8ddSQgIgxxe0R3NjVm3NWF64";
+      gpg.format = "ssh";
+
+      commit.gpgsign = true;
+      gpg.ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
+
       pull = {
         rebase = true;
       };
+
       rerere.enabled = true;
     };
   };

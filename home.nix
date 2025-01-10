@@ -46,6 +46,14 @@
     };
   };
 
+  gtk.enable = true;
+  gtk.gtk3.extraConfig = {
+    gtk-application-prefer-dark-theme = 1;
+  };
+  gtk.gtk4.extraConfig = {
+    gtk-application-prefer-dark-theme = 1;
+  };
+
   programs.vim = {
     enable = true;
     defaultEditor = true;
@@ -53,10 +61,49 @@
 
   programs.tmux.enable = true;
 
-  programs.swaylock.enable = true;
-  services.swayidle.enable = true;
+  programs.swaylock = {
+    enable = true;
+    settings = {
+      image = "${./background.jpg}";
+    };
+  };
+  services.swayidle = {
+    enable = true;
+
+    timeouts = [
+      {
+        timeout = 120;
+        command = "${pkgs.swaylock}/bin/swaylock -fF";
+      }
+      {
+        timeout = 600;
+        command = "${pkgs.systemd}/bin/systemctl suspend";
+      }
+    ];
+
+    events = [
+      {
+        event = "before-sleep";
+        command = "${pkgs.swaylock}/bin/swaylock -fF";
+      }
+    ];
+
+    systemdTarget = "sway-session.target";
+  };
   services.swayosd.enable = true;
   programs.waybar.enable = true;
+
+  programs.ssh = {
+    enable = true;
+    matchBlocks = {
+      "homelab.jbaker.io" = {
+        forwardAgent = true;
+      };
+    };
+    extraConfig = ''
+      IdentityAgent "~/.1password/agent.sock"
+    '';
+  };
 
   home.packages = with pkgs; [
     jq
@@ -66,25 +113,28 @@
     swaybg
   ];
 
-    wayland.windowManager.sway = {
+  wayland.windowManager.sway = {
     enable = true;
     package = null;
     xwayland = true;
     systemd.enable = true;
 
-
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
     config = rec {
-      bars = [{ command = "waybar"; }];
+      bars = [ { command = "waybar"; } ];
       modifier = "Mod4";
       # Use kitty as default terminal
-      terminal = "alacritty"; 
+      terminal = "alacritty";
     };
 
     extraConfig = ''
-    bindgesture swipe:right workspace prev
-    bindgesture swipe:left workspace next
-    output * bg ${./background.jpg} fill
+      exec --no-startup-id ${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init
+      exec --no-startup-id ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
+      exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
+      exec ${pkgs.wlsunset}/bin/wlsunset -l -0.75 -L 51.51
+      bindgesture swipe:right workspace prev
+      bindgesture swipe:left workspace next
+      output * bg ${./background.jpg} fill
     '';
   };
 }

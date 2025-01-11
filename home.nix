@@ -1,11 +1,14 @@
 {
   pkgs,
+  lib,
   username,
   homeDirectory,
   email ? "j.baker@outlook.com",
+  sshPubKey,
   ...
 }:
-{
+let linux = pkgs.stdenv.isLinux;
+in {
   home.username = username;
   home.homeDirectory = homeDirectory;
   home.stateVersion = "24.11";
@@ -32,17 +35,16 @@
     lfs.enable = true;
 
     extraConfig = {
-      user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINURXYzuUG9sLdATYSzq8ddSQgIgxxe0R3NjVm3NWF64";
+      user.signingkey = sshPubKey;
       gpg.format = "ssh";
 
       commit.gpgsign = true;
-      gpg.ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
 
       pull = {
         rebase = true;
       };
 
-      rerere.enabled = true;
+      gpg.ssh.program = if linux then "${pkgs._1password-gui}/share/1password/op-ssh-sign" else "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
     };
   };
 
@@ -54,21 +56,46 @@
     gtk-application-prefer-dark-theme = 1;
   };
 
-  programs.vim = {
+  programs.nixvim = {
     enable = true;
+    vimAlias = true;
+    viAlias = true;
     defaultEditor = true;
+
+    plugins.trouble = {
+      enable = true;
+    };
+    plugins.web-devicons = {
+      enable = true;
+    };
+    plugins.lsp = {
+      enable = true;
+      servers = {
+        nil_ls.enable = true;
+        bashls.enable = true;
+        rust_analyzer = {
+          enable = true;
+          installCargo = false;
+          installRustc = false;
+          installRustfmt = false;
+        };
+      };
+    };
+    plugins.telescope = {
+      enable = true;
+    };
   };
 
   programs.tmux.enable = true;
 
   programs.swaylock = {
-    enable = true;
+    enable = linux;
     settings = {
       image = "${./background.jpg}";
     };
   };
   services.swayidle = {
-    enable = true;
+    enable = linux;
 
     timeouts = [
       {
@@ -90,8 +117,8 @@
 
     systemdTarget = "sway-session.target";
   };
-  services.swayosd.enable = true;
-  programs.waybar.enable = true;
+  services.swayosd.enable = linux;
+  programs.waybar.enable = linux;
 
   programs.ssh = {
     enable = true;
@@ -100,21 +127,23 @@
         forwardAgent = true;
       };
     };
-    extraConfig = ''
+    extraConfig = if linux then ''
       IdentityAgent "~/.1password/agent.sock"
+    '' else ''
+      IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
     '';
   };
 
   home.packages = with pkgs; [
     jq
     htop
-
+  ] ++ lib.optionals linux [
     nwg-launchers
     swaybg
   ];
 
   wayland.windowManager.sway = {
-    enable = true;
+    enable = linux;
     package = null;
     xwayland = true;
     systemd.enable = true;

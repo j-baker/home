@@ -5,6 +5,7 @@
   homeDirectory,
   email ? "j.baker@outlook.com",
   sshPubKey,
+  headless,
   ...
 }:
 let linux = pkgs.stdenv.isLinux;
@@ -48,7 +49,7 @@ in {
     };
   };
 
-  gtk.enable = true;
+  gtk.enable = linux && !headless;
   gtk.gtk3.extraConfig = {
     gtk-application-prefer-dark-theme = 1;
   };
@@ -89,13 +90,13 @@ in {
   programs.tmux.enable = true;
 
   programs.swaylock = {
-    enable = linux;
+    enable = linux && !headless;
     settings = {
       image = "${./background.jpg}";
     };
   };
   services.swayidle = {
-    enable = linux;
+    enable = linux && !headless;
 
     timeouts = [
       {
@@ -117,11 +118,11 @@ in {
 
     systemdTarget = "sway-session.target";
   };
-  services.swayosd.enable = linux;
-  programs.waybar.enable = linux;
+  services.swayosd.enable = linux && !headless;
+  programs.waybar.enable = linux && !headless;
 
   programs.ssh = {
-    enable = true;
+    enable = !headless;
     matchBlocks = {
       "homelab.jbaker.io" = {
         forwardAgent = true;
@@ -137,13 +138,13 @@ in {
   home.packages = with pkgs; [
     jq
     htop
-  ] ++ lib.optionals linux [
+  ] ++ lib.optionals (linux && !headless) [
     nwg-launchers
     swaybg
   ];
 
   wayland.windowManager.sway = {
-    enable = linux;
+    enable = linux && !headless;
     package = null;
     xwayland = true;
     systemd.enable = true;

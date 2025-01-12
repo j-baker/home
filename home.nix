@@ -89,10 +89,35 @@ in {
 
   programs.tmux.enable = true;
 
-  programs.swaylock = {
+  programs.hyprlock = {
     enable = linux && !headless;
     settings = {
-      image = "${./background.jpg}";
+      general = {
+        disable_loading_bar = true;
+        grace = 5;
+        hide_cursor = true;
+        enable_fingerprint = true;
+      };
+      background = [
+        {
+          path = "${./background.jpg}";
+        }
+      ];
+      input-field = [
+        {
+          size = "200, 50";
+          position = "0, -80";
+          monitor = "";
+          dots_center = true;
+          fade_on_empty = false;
+          font_color = "rgb(202, 211, 245)";
+          inner_color = "rgb(91, 96, 120)";
+          outer_color = "rgb(24, 25, 38)";
+          outline_thickness = 5;
+          placeholder_text = ''<span foreground="##cad3f5">Password...</span>'';
+          shadow_passes = 2;
+        }
+      ];
     };
   };
   services.swayidle = {
@@ -101,7 +126,7 @@ in {
     timeouts = [
       {
         timeout = 120;
-        command = "${pkgs.swaylock}/bin/swaylock -fF";
+        command = "${pkgs.hyprlock}/bin/hyprlock";
       }
       {
         timeout = 600;
@@ -112,7 +137,7 @@ in {
     events = [
       {
         event = "before-sleep";
-        command = "${pkgs.swaylock}/bin/swaylock -fF";
+        command = "${pkgs.hyprlock}/bin/hyprlock";
       }
     ];
 
@@ -160,6 +185,8 @@ in {
     extraConfig = ''
       exec --no-startup-id ${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init
       exec --no-startup-id ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
+      exec ${pkgs._1password-gui}/bin/1password --silent
+      exec ${pkgs.trayscale}/bin/trayscale --hide-window
       exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
       exec ${pkgs.wlsunset}/bin/wlsunset -l -0.75 -L 51.51
       bindgesture swipe:right workspace prev

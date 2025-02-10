@@ -1,7 +1,8 @@
 nixvim:
-{...}: {
-    imports = [
-        ./home.nix
-        nixvim.homeManagerModules.nixvim
-    ];
+{ ... }:
+{
+  imports = [
+    ./home.nix
+    nixvim.homeManagerModules.nixvim
+  ];
 }

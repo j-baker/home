@@ -8,8 +8,10 @@
   headless,
   ...
 }:
-let linux = pkgs.stdenv.isLinux;
-in {
+let
+  linux = pkgs.stdenv.isLinux;
+in
+{
   home.username = username;
   home.homeDirectory = homeDirectory;
   home.stateVersion = "24.11";
@@ -45,7 +47,11 @@ in {
         rebase = true;
       };
 
-      gpg.ssh.program = if linux then "${pkgs._1password-gui}/share/1password/op-ssh-sign" else "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+      gpg.ssh.program =
+        if linux then
+          "${pkgs._1password-gui}/share/1password/op-ssh-sign"
+        else
+          "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
     };
   };
 
@@ -120,6 +126,11 @@ in {
       ];
     };
   };
+
+  programs.wofi = {
+    enable = linux && !headless;
+  };
+
   services.swayidle = {
     enable = linux && !headless;
 
@@ -139,12 +150,17 @@ in {
         event = "before-sleep";
         command = "${pkgs.hyprlock}/bin/hyprlock";
       }
+      {
+        event = "after-resume";
+        command = "swaymsg 'seat * idle reset'";
+      }
     ];
 
     systemdTarget = "sway-session.target";
   };
   services.swayosd.enable = linux && !headless;
   programs.waybar.enable = linux && !headless;
+  services.blueman-applet.enable = linux && !headless;
 
   programs.ssh = {
     enable = !headless;
@@ -153,20 +169,27 @@ in {
         forwardAgent = true;
       };
     };
-    extraConfig = if linux then ''
-      IdentityAgent "~/.1password/agent.sock"
-    '' else ''
-      IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-    '';
+    extraConfig =
+      if linux then
+        ''
+          IdentityAgent "~/.1password/agent.sock"
+        ''
+      else
+        ''
+          IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+        '';
   };
 
-  home.packages = with pkgs; [
-    jq
-    htop
-  ] ++ lib.optionals (linux && !headless) [
-    nwg-launchers
-    swaybg
-  ];
+  home.packages =
+    with pkgs;
+    [
+      jq
+      htop
+    ]
+    ++ lib.optionals (linux && !headless) [
+      nwg-launchers
+      swaybg
+    ];
 
   wayland.windowManager.sway = {
     enable = linux && !headless;
@@ -180,6 +203,7 @@ in {
       modifier = "Mod4";
       # Use kitty as default terminal
       terminal = "alacritty";
+      menu = "wofi --show=drun";
     };
 
     extraConfig = ''
@@ -189,6 +213,7 @@ in {
       exec ${pkgs.trayscale}/bin/trayscale --hide-window
       exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
       exec ${pkgs.wlsunset}/bin/wlsunset -l -0.75 -L 51.51
+      exec ${pkgs.blueman}/bin/blueman-applet
       bindgesture swipe:right workspace prev
       bindgesture swipe:left workspace next
       output * bg ${./background.jpg} fill

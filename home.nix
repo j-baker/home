@@ -41,6 +41,8 @@ in
       user.signingkey = sshPubKey;
       gpg.format = "ssh";
 
+      push.autoSetupRemote = true;
+
       commit.gpgsign = true;
 
       pull = {

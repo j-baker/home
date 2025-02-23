@@ -3,16 +3,18 @@
   inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
   inputs.nixvim.url = "github:nix-community/nixvim";
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.network_manager_ui.url = "path:/home/james/git/network_manager_ui";
   outputs =
     {
       nixpkgs,
       home-manager,
       flake-utils,
       nixvim,
+      network_manager_ui,
       ...
     }:
     let
-      module = (import ./base.nix) nixvim;
+      module = (import ./base.nix) [ nixvim.homeManagerModules.nixvim network_manager_ui.hmModules.default];
     in
     {
       lib.home-manager = home-manager;

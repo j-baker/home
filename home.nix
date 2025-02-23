@@ -29,6 +29,16 @@ in
       theme = "agnoster";
     };
   };
+  
+  programs.network_manager_ui = {
+    enable = linux && !headless;
+    rofiPkg = pkgs.rofi-wayland;
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   programs.git = {
     enable = true;
@@ -161,7 +171,10 @@ in
     systemdTarget = "sway-session.target";
   };
   services.swayosd.enable = linux && !headless;
-  programs.waybar.enable = linux && !headless;
+  programs.waybar = {
+    enable = linux && !headless;
+    settings = import ./waybar.nix;
+  };
   services.blueman-applet.enable = linux && !headless;
 
   programs.ssh = {

@@ -173,7 +173,10 @@ in
   services.swayosd.enable = linux && !headless;
   programs.waybar = {
     enable = linux && !headless;
-    settings = import ./waybar.nix;
+    settings = {
+      topBar = import ./waybar.nix;
+    };
+    style = ./waybar.css;
   };
   services.blueman-applet.enable = linux && !headless;
 
@@ -226,7 +229,6 @@ in
       exec --no-startup-id ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
       exec ${pkgs._1password-gui}/bin/1password --silent
       exec ${pkgs.trayscale}/bin/trayscale --hide-window
-      exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
       exec ${pkgs.wlsunset}/bin/wlsunset -l -0.75 -L 51.51
       exec ${pkgs.blueman}/bin/blueman-applet
       bindgesture swipe:right workspace prev

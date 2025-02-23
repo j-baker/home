@@ -19,6 +19,7 @@ tooltip {
 }
 
 #clock,
+#idle_inhibitor,
 #tray,
 #cpu,
 #memory,
@@ -71,6 +72,7 @@ tooltip {
 #cpu,
 #memory,
 #network,
+#idle_inhibitor,
 #pulseaudio {
     background-color: #ddc7a1;
     border: 2px solid #c7ab7a;

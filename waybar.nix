@@ -19,6 +19,7 @@
     "cpu"
     "memory"
     "battery"
+    "idle_inhibitor"
     "network"
     "pulseaudio"
   ];
@@ -65,10 +66,19 @@
     tooltip = false;
   };
 
+  idle_inhibitor = {
+    format = "{icon}";
+    format-icons = {
+        activated = "w";
+        deactivated = "s";
+    };
+  };
+
   network = {
     "format-wifi" = "wifi {bandwidthDownBits}";
     "format-ethernet" = "enth {bandwidthDownBits}";
     "format-disconnected" = "no network";
+    on-click = "network_manager_ui";
     interval = 5;
     tooltip = false;
   };
